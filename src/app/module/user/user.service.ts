@@ -23,95 +23,87 @@ const getMe = async (user: RequestUser) => {
   return isUserExists;
 };
 
-const updateProfile = async (
-  payload: UpdateProfilePayload,
-  userId: string,
-) => {
-  const { name, contactNumber, address, buffer } = payload;
-
+const updateProfile = async (payload: UpdateProfilePayload, userId: string) => {
   const currentUser = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-    select: {
-      imagePublicId: true,
-      imageUrl: true,
-      role: true,
-    },
+    where: { id: userId },
+    include: { tenant: true, landlord: true },
   });
+
+  if (!currentUser) {
+    throw new Error("User not found");
+  }
 
   let cloudinaryResult: UploadApiResponse | null = null;
 
-  if (buffer) {
+  if (payload.buffer) {
     cloudinaryResult = await new Promise<UploadApiResponse>(
       (resolve, reject) => {
         cloudinary.uploader
-          .upload_stream(
-            {
-              resource_type: "auto",
-            },
-            async (error, result) => {
-              if (error) {
-                return reject(error);
-              }
-              if (!result) {
-                return reject(new Error("No result returned from Cloudinary"));
-              }
-              resolve(result);
-            },
-          )
-          .end(buffer);
+          .upload_stream({ resource_type: "auto" }, (error, result) => {
+            if (error) return reject(error);
+            if (!result) return reject(new Error("Cloudinary error"));
+            resolve(result);
+          })
+          .end(payload.buffer);
       },
     );
   }
 
-  const userUpdateData: any = {};
-  if (name !== undefined) userUpdateData.name = name;
+  const currentContact =
+    currentUser.role === "TENANT"
+      ? currentUser.tenant?.contactNumber
+      : currentUser.landlord?.contactNumber;
 
-  if (cloudinaryResult) {
-    userUpdateData.imageUrl = cloudinaryResult.secure_url;
-    userUpdateData.imagePublicId = cloudinaryResult.public_id;
-  }
+  const currentAddress =
+    currentUser.role === "TENANT"
+      ? currentUser.tenant?.address
+      : currentUser.landlord?.address;
 
-  const includeRelations: any = {};
-  const profileUpdateData: any = {};
-  if (name !== undefined) profileUpdateData.name = name;
-  if (contactNumber !== undefined)
-    profileUpdateData.contactNumber = contactNumber;
-  if (address !== undefined) profileUpdateData.address = address;
+  const name =
+    payload.name && payload.name.trim() !== ""
+      ? payload.name
+      : currentUser.name;
 
-  if (currentUser?.role === "TENANT") {
-    includeRelations.tenant = true;
-    if (Object.keys(profileUpdateData).length > 0) {
-      userUpdateData.tenant = {
-        update: profileUpdateData,
-      };
-    }
-  } else if (currentUser?.role === "LANDLORD") {
-    includeRelations.landlord = true;
-    if (Object.keys(profileUpdateData).length > 0) {
-      userUpdateData.landlord = {
-        update: profileUpdateData,
-      };
-    }
-  }
+  const contactNumber =
+    payload.contactNumber && payload.contactNumber.trim() !== ""
+      ? payload.contactNumber
+      : currentContact || "";
 
-  const updateUser = await prisma.user.update({
-    where: {
-      id: userId,
+  const address =
+    payload.address && payload.address.trim() !== ""
+      ? payload.address
+      : currentAddress || "";
+
+  const roleKey = currentUser.role === "TENANT" ? "tenant" : "landlord";
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      name,
+      ...(cloudinaryResult && {
+        imageUrl: cloudinaryResult.secure_url,
+        imagePublicId: cloudinaryResult.public_id,
+      }),
+      [roleKey]: {
+        update: {
+          name,
+          contactNumber,
+          address,
+        },
+      },
     },
-    data: userUpdateData,
-    include: includeRelations,
-    omit: {
-      password: true,
+    include: {
+      tenant: currentUser.role === "TENANT",
+      landlord: currentUser.role === "LANDLORD",
     },
+    omit: { password: true },
   });
 
-  if (buffer && currentUser?.imagePublicId && currentUser.imageUrl) {
+  if (payload.buffer && currentUser.imagePublicId && currentUser.imageUrl) {
     await cloudinary.uploader.destroy(currentUser.imagePublicId);
   }
 
-  return updateUser;
+  return updatedUser;
 };
 
 export const UserServices = {
