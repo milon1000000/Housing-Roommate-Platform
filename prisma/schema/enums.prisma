@@ -1,0 +1,23 @@
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  LANDLORD
+  TENANT
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum LandlordVerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AuthProvider {
+  GOOGLE
+  CREDENTIAL
+}
