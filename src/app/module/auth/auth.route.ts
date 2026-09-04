@@ -7,29 +7,37 @@ import passport from "passport";
 const router = Router();
 
 router.post(
-    "/register",
-    validateRequest(UserValidation.TenantRegistrationZodSchema),
-    AuthController.registerTenant,
+	"/register",
+	validateRequest(UserValidation.TenantRegistrationZodSchema),
+	AuthController.registerTenant,
 );
 
 router.post(
-    "/verify-email",
-    validateRequest(UserValidation.TenantEmailVerifyZodSchema),
-    AuthController.verifyTenantEmail,
+	"/verify-email",
+	validateRequest(UserValidation.TenantEmailVerifyZodSchema),
+	AuthController.verifyTenantEmail,
 );
 router.post(
-  "/login",
-  validateRequest(UserValidation.LoginZodSchema),
-  AuthController.loginUser
+	"/login",
+	validateRequest(UserValidation.LoginZodSchema),
+	AuthController.loginUser,
 );
 
 router.post("/refresh-token", AuthController.refreshToken);
 router.get(
-    "/google",
-    passport.authenticate("google", { scope: ["profile", "email"] }),
+	"/google",
+	passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 router.get("/google/callback", AuthController.googleCallback);
-router.post("/forgot-password", validateRequest(UserValidation.ForgotZodSchema), AuthController.forgotPassword);
-router.post("/reset-password", validateRequest(UserValidation.ResetZodSchema), AuthController.resetPassword);
+router.post(
+	"/forgot-password",
+	validateRequest(UserValidation.ForgotZodSchema),
+	AuthController.forgotPassword,
+);
+router.post(
+	"/reset-password",
+	validateRequest(UserValidation.ResetZodSchema),
+	AuthController.resetPassword,
+);
 
 export const AuthRoutes = router;

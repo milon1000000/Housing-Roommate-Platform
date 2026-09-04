@@ -7,20 +7,22 @@ model Property {
   rentPrice     Float
   totalRooms    Int
   amenities     String[] // e.g. ["WiFi", "AC", "Parking"]
-  images        String[]
-  isAvailable   Boolean  @default(true)
-  
-  isDeleted     Boolean  @default(false)
-  deletedAt     DateTime?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  imageUrl      String[]
+  imagePublicId String[]
 
-  landlordId    String
-  landlord      Landlord @relation(fields: [landlordId], references: [id], onDelete: Cascade)
+  isAvailable Boolean @default(true)
 
-  rooms         Room[]
-  bookings      Booking[]
-  utilityBills  UtilityBill[]
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  landlordId String
+  landlord   Landlord @relation(fields: [landlordId], references: [id], onDelete: Cascade)
+
+  rooms        Room[]
+  bookings     Booking[]
+  utilityBills UtilityBill[]
 
   @@index([city], name: "idx_property_city")
   @@map("properties")

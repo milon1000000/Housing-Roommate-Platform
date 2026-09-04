@@ -1,4 +1,4 @@
-import httpStatus from 'http-status';
+import httpStatus from "http-status";
 import type { NextFunction, Request, Response } from "express";
 import type { JwtPayload } from "jsonwebtoken";
 import type { Role } from "../../generated/prisma/enums";
@@ -16,9 +16,7 @@ export interface RequestUser {
 }
 declare global {
   namespace Express {
-    interface Request {
-      user?: User;
-    }
+    interface User extends RequestUser {}
   }
 }
 
@@ -42,7 +40,10 @@ export const auth = (...requiredRoles: Role[]) => {
     const verifiedToken = jwtUtils.verifyToken(token, config.jwt_access_secret);
 
     if (!verifiedToken.success) {
-      throw new AppError(httpStatus.UNAUTHORIZED, verifiedToken.error || "Invalid token");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        verifiedToken.error || "Invalid token",
+      );
     }
 
     const { email, name, userId, role } = verifiedToken.data as JwtPayload;
@@ -64,11 +65,17 @@ export const auth = (...requiredRoles: Role[]) => {
     });
 
     if (!user) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "User not found. Please log in again.");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "User not found. Please log in again.",
+      );
     }
 
     if (user.status === "BLOCKED") {
-      throw new AppError(httpStatus.FORBIDDEN, "Your account has been blocked. Please contact support.");
+      throw new AppError(
+        httpStatus.FORBIDDEN,
+        "Your account has been blocked. Please contact support.",
+      );
     }
 
     req.user = {

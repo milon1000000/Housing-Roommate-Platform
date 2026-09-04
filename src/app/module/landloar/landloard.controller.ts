@@ -6,70 +6,75 @@ import { LandlordServices } from "./landloard.service";
 import { sendResponse } from "../../utils/sendResponse";
 
 const applyAsLandlord = catchAsync(async (req: Request, res: Response) => {
-  const payload = req.body; 
-  console.log(payload)
+	const payload = req.body;
+	console.log(payload);
 
-  const result = await LandlordServices.applyAsLandlord(payload);
+	const result = await LandlordServices.applyAsLandlord(payload);
 
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "Landlord application submitted successfully. Please check your email for OTP.",
-    data: result,
-  });
+	sendResponse(res, {
+		statusCode: httpStatus.CREATED,
+		success: true,
+		message:
+			"Landlord application submitted successfully. Please check your email for OTP.",
+		data: result,
+	});
 });
 
 const verifyLandlordEmail = catchAsync(async (req: Request, res: Response) => {
-  const result = await LandlordServices.verifyLandlordEmail(req.body);
+	const result = await LandlordServices.verifyLandlordEmail(req.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Email verified successfully",
-    data: result,
-  });
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: "Email verified successfully",
+		data: result,
+	});
 });
 
 const approveLandlord = catchAsync(async (req: Request, res: Response) => {
-  const reviewer = req.user as RequestUser;
-  const result = await LandlordServices.approveLandlord(req.body, reviewer);
+	const reviewer = req.user as RequestUser;
+	const result = await LandlordServices.approveLandlord(req.body, reviewer);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Landlord application status updated successfully",
-    data: result,
-  });
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: "Landlord application status updated successfully",
+		data: result,
+	});
 });
 
 const getAllLandlords = catchAsync(async (req: Request, res: Response) => {
-  const result = await LandlordServices.getAllLandlords(req.query);
+	const result = await LandlordServices.getAllLandlords(req.query);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Approved landlords fetched successfully",
-    meta: result.meta,
-    data: result.data,
-  });
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: "Approved landlords fetched successfully",
+		meta: result.meta,
+		data: result.data,
+	});
 });
 
-const getSingleLandlordProfile = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await LandlordServices.getSingleLandlordProfile(id as string);
+const getSingleLandlordProfile = catchAsync(
+	async (req: Request, res: Response) => {
+		const { id } = req.params;
+		const result = await LandlordServices.getSingleLandlordProfile(
+			id as string,
+		);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Landlord profile fetched successfully",
-    data: result,
-  });
-});
+		sendResponse(res, {
+			statusCode: httpStatus.OK,
+			success: true,
+			message: "Landlord profile fetched successfully",
+			data: result,
+		});
+	},
+);
 
 export const LandlordController = {
-  applyAsLandlord,
-  verifyLandlordEmail,
-  approveLandlord,
-  getAllLandlords,
-  getSingleLandlordProfile
+	applyAsLandlord,
+	verifyLandlordEmail,
+	approveLandlord,
+	getAllLandlords,
+	getSingleLandlordProfile,
 };
