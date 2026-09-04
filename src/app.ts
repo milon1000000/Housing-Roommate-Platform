@@ -15,6 +15,7 @@ import passport from "passport";
 import "./app/config/passport";
 import { getBkashIdToken } from './app/lib/bkash';
 import { UserRouters } from "./app/module/user/user.route";
+import { LandlordRoutes } from "./app/module/landloar/landloard.route";
 
 const app: Application = express();
 
@@ -35,6 +36,7 @@ app.use(passport.initialize());
 
 app.use("/api/v1/auth", AuthRoutes);
 app.use("/api/v1/user", UserRouters);
+app.use("/api/v1/landloard", LandlordRoutes);
 
 app.get("/test", async (req: Request, res: Response, next: NextFunction) => {
 	try {

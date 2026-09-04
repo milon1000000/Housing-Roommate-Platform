@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Doctor Application Approved</title>
+  <title>Landlord Application Rejected</title>
 </head>
 
 <body style="margin:0; padding:0; background-color:#f5f7fb; font-family:Arial, Helvetica, sans-serif;">
@@ -20,7 +20,7 @@
           <!-- Header -->
           <tr>
             <td align="center"
-              style="background:linear-gradient(135deg,#16a34a,#15803d); padding:35px 20px;">
+              style="background:linear-gradient(135deg,#ef4444,#dc2626); padding:35px 20px;">
 
               <div style="
                 width:65px;
@@ -29,11 +29,11 @@
                 margin:0 auto 15px;
                 border-radius:50%;
                 background:#ffffff;
-                color:#16a34a;
-                font-size:36px;
+                color:#dc2626;
+                font-size:34px;
                 font-weight:bold;
               ">
-                ✓
+                !
               </div>
 
               <h1 style="
@@ -42,15 +42,15 @@
                 font-size:28px;
                 font-weight:700;
               ">
-                Application Approved
+                Application Update
               </h1>
 
               <p style="
                 margin:10px 0 0;
-                color:#dcfce7;
+                color:#fee2e2;
                 font-size:15px;
               ">
-                Welcome to our healthcare platform
+                Landlord application review result
               </p>
 
             </td>
@@ -65,7 +65,7 @@
                 color:#111827;
                 font-size:22px;
               ">
-                Congratulations, <%= name %>!
+                Hello, <%= name %>
               </h2>
 
               <p style="
@@ -74,14 +74,23 @@
                 font-size:16px;
                 line-height:1.7;
               ">
-                We are pleased to inform you that your application to become
-                a doctor on our platform has been successfully reviewed and
-                <strong style="color:#16a34a;">approved</strong>.
+                Thank you for your interest in joining our platform as a landlord.
+              </p>
+
+              <p style="
+                margin:0 0 20px;
+                color:#4b5563;
+                font-size:16px;
+                line-height:1.7;
+              ">
+                After carefully reviewing your submitted information and
+                documents, we regret to inform you that your application
+                has not been approved at this time.
               </p>
 
               <!-- Status Card -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0"
-                style="margin:25px 0; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;">
+                style="margin:25px 0; background:#fef2f2; border:1px solid #fecaca; border-radius:10px;">
 
                 <tr>
                   <td style="padding:20px;">
@@ -97,11 +106,40 @@
 
                     <p style="
                       margin:0;
-                      color:#15803d;
+                      color:#dc2626;
                       font-size:20px;
                       font-weight:bold;
                     ">
-                      ✓ APPROVED
+                      ✕ REJECTED
+                    </p>
+
+                  </td>
+                </tr>
+
+              </table>
+
+              <!-- Rejection Reason -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                style="margin:25px 0; background:#fff7ed; border-left:4px solid #f97316;">
+
+                <tr>
+                  <td style="padding:20px;">
+
+                    <h3 style="
+                      margin:0 0 10px;
+                      color:#9a3412;
+                      font-size:17px;
+                    ">
+                      Reason for Rejection
+                    </h3>
+
+                    <p style="
+                      margin:0;
+                      color:#7c2d12;
+                      font-size:15px;
+                      line-height:1.7;
+                    ">
+                      <%= reason || "No specific reason was provided." %>
                     </p>
 
                   </td>
@@ -115,39 +153,14 @@
                 font-size:16px;
                 line-height:1.7;
               ">
-                Your doctor account is now active. You can log in to your
-                account and start managing your profile, appointments,
-                consultations and other doctor services.
+                We encourage you to review the reason mentioned above and
+                make the necessary corrections before submitting another
+                application.
               </p>
 
-              <!-- Login Button -->
-              <table cellpadding="0" cellspacing="0" border="0"
-                style="margin:30px auto;">
-
-                <tr>
-                  <td align="center"
-                    style="background:#16a34a; border-radius:8px;">
-
-                    <a href="<%= loginUrl %>"
-                      style="
-                        display:inline-block;
-                        padding:14px 30px;
-                        color:#ffffff;
-                        text-decoration:none;
-                        font-size:16px;
-                        font-weight:bold;
-                      ">
-                      Login to Your Account
-                    </a>
-
-                  </td>
-                </tr>
-
-              </table>
-
-              <!-- Security Notice -->
+              <!-- Support -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0"
-                style="background:#f9fafb; border-radius:10px;">
+                style="margin:25px 0; background:#f9fafb; border-radius:10px;">
 
                 <tr>
                   <td style="padding:18px;">
@@ -158,9 +171,9 @@
                       font-size:14px;
                       line-height:1.6;
                     ">
-                      <strong>Security Notice:</strong>
-                      Please change your temporary password immediately
-                      after your first login.
+                      <strong>Need help?</strong><br />
+                      If you believe this decision was made in error or need
+                      additional clarification, please contact our support team.
                     </p>
 
                   </td>
@@ -170,21 +183,12 @@
 
               <p style="
                 margin:25px 0 0;
-                color:#6b7280;
-                font-size:14px;
-                line-height:1.6;
-              ">
-                If you have any questions, please contact our support team.
-              </p>
-
-              <p style="
-                margin:25px 0 0;
                 color:#374151;
                 font-size:15px;
                 line-height:1.6;
               ">
                 Best regards,<br />
-                <strong>Healthcare Platform Team</strong>
+                <strong>Property Rental Platform Team</strong>
               </p>
 
             </td>
@@ -200,7 +204,7 @@
                 color:#9ca3af;
                 font-size:13px;
               ">
-                © <%= new Date().getFullYear() %> Healthcare Platform
+                © <%= new Date().getFullYear() %> Property Rental Platform
               </p>
 
               <p style="

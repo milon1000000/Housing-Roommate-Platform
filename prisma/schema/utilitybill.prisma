@@ -1,0 +1,15 @@
+model UtilityBill {
+  id          String   @id @default(uuid())
+  title       String   // e.g. "Electricity Bill - March"
+  totalAmount Float
+  dueDate     DateTime
+  isPaid      Boolean  @default(false)
+
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("utility_bills")
+}

@@ -1,0 +1,17 @@
+model Payment {
+  id              String        @id @default(uuid())
+  transactionId   String        @unique
+  amount          Float
+  gateway         String        // bKash, Stripe, SSLCommerz
+  status          PaymentStatus @default(PENDING) // PENDING, SUCCESS, FAILED, REFUNDED
+  paymentGatewayData Json?
+
+  bookingId       String        @unique
+  booking         Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("payments")
+}
+

@@ -1,10 +1,9 @@
-```ejs
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doctor Email Verification</title>
+  <title>Landlord Email Verification</title>
 </head>
 
 <body style="
@@ -51,7 +50,7 @@
             <td
               align="center"
               style="
-                background-color: #2563eb;
+                background-color: #4f46e5;
                 padding: 30px 25px;
               "
             >
@@ -64,22 +63,21 @@
                   letter-spacing: 0.3px;
                 "
               >
-                PH Healthcare
+                Housing Platform
               </div>
 
               <div
                 style="
                   margin-top: 8px;
-                  color: #dbeafe;
+                  color: #e0e7ff;
                   font-size: 14px;
                 "
               >
-                Doctor Email Verification
+                Landlord Email Verification
               </div>
 
             </td>
           </tr>
-
 
           <!-- Body -->
           <tr>
@@ -102,7 +100,6 @@
                 <strong><%= name %></strong>,
               </p>
 
-
               <!-- Message -->
               <p
                 style="
@@ -112,13 +109,12 @@
                   line-height: 1.7;
                 "
               >
-                Welcome to
-                <strong>PH Healthcare</strong>.
-                Your doctor account has been created successfully.
+                Thank you for applying as a Landlord on
+                <strong>Housing Platform</strong>.
+                Your application has been received successfully.
                 Please verify your email address using the verification
                 code below.
               </p>
-
 
               <!-- OTP Box -->
               <table
@@ -156,11 +152,10 @@
                       Email Verification Code
                     </div>
 
-
                     <!-- OTP -->
                     <div
                       style="
-                        color: #1d4ed8;
+                        color: #4f46e5;
                         font-size: 42px;
                         font-weight: 700;
                         letter-spacing: 10px;
@@ -175,7 +170,6 @@
                 </tr>
               </table>
 
-
               <!-- Expiration -->
               <p
                 style="
@@ -188,10 +182,9 @@
               >
                 This verification code will expire in
                 <strong>
-                  <%= expireMinites %> minutes
+                  <%= expireMinutes %> minutes
                 </strong>.
               </p>
-
 
               <!-- Security Notice -->
               <table
@@ -231,7 +224,7 @@
                       </strong>
 
                       Never share this verification code with anyone.
-                      PH Healthcare will never ask you for your OTP
+                      Housing Platform will never ask you for your OTP
                       or password.
 
                     </p>
@@ -239,7 +232,6 @@
                   </td>
                 </tr>
               </table>
-
 
               <!-- Ignore Message -->
               <p
@@ -250,11 +242,10 @@
                   line-height: 1.6;
                 "
               >
-                If you did not create a doctor account with
-                <strong>PH Healthcare</strong>,
+                If you did not submit a landlord application with
+                <strong>Housing Platform</strong>,
                 you can safely ignore this email.
               </p>
-
 
               <!-- Regards -->
               <p
@@ -266,12 +257,11 @@
                 "
               >
                 Regards,<br>
-                <strong>PH Healthcare Team</strong>
+                <strong>Housing Platform Team</strong>
               </p>
 
             </td>
           </tr>
-
 
           <!-- Footer -->
           <tr>
@@ -292,7 +282,7 @@
                 "
               >
                 © <%= new Date().getFullYear() %>
-                PH Healthcare.
+                Housing Platform.
                 All rights reserved.
               </p>
 
@@ -319,4 +309,3 @@
 
 </body>
 </html>
-```

@@ -1,0 +1,14 @@
+model Room {
+  id          String     @id @default(uuid())
+  roomNumber  String
+  rentAmount  Float
+  status      RoomStatus @default(AVAILABLE) // AVAILABLE, BOOKED
+  
+  propertyId  String
+  property    Property   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  bookings    Booking[]
+
+  @@map("rooms")
+}
+

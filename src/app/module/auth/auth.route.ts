@@ -18,9 +18,9 @@ router.post(
     AuthController.verifyTenantEmail,
 );
 router.post(
-    "/login",
-    validateRequest(UserValidation.LoginZodSchema),
-    AuthController.loginUser,
+  "/login",
+  validateRequest(UserValidation.LoginZodSchema),
+  AuthController.loginUser
 );
 
 router.post("/refresh-token", AuthController.refreshToken);

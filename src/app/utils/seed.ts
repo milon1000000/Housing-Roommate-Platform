@@ -92,7 +92,7 @@ export const seedTesterLandlord = async () => {
             email,
             contactNumber: "01700000000",
             address: "Dhaka, Bangladesh",
-            nidOrPassport: "1234567890",
+            nidOrPassportNumber: "1234567890",
             verificationStatus:LandlordVerificationStatus.APPROVED
           },
         },
