@@ -3,7 +3,7 @@ model Payment {
   transactionId   String        @unique
   amount          Float
   gateway         String        // bKash, Stripe, SSLCommerz
-  status          PaymentStatus @default(PENDING) // PENDING, SUCCESS, FAILED, REFUNDED
+  status          PaymentStatus @default(UNPAID) // PENDING, SUCCESS, FAILED, REFUNDED
   paymentGatewayData Json?
 
   bookingId       String        @unique

@@ -18,6 +18,8 @@ import { UserRouters } from "./app/module/user/user.route";
 import { LandlordRoutes } from "./app/module/landloar/landloard.route";
 import { PropertyRoutes } from "./app/module/poperty/poperty.route";
 import { RoomRoutes } from "./app/module/room/room.route";
+import { BookingRoutes } from "./app/module/booking/booking.route";
+import { PaymentRoutes } from "./app/module/payment/payment.route";
 
 const app: Application = express();
 
@@ -41,6 +43,8 @@ app.use("/api/v1/user", UserRouters);
 app.use("/api/v1/landloard", LandlordRoutes);
 app.use("/api/v1/poperty", PropertyRoutes);
 app.use("/api/v1/room", RoomRoutes);
+app.use("/api/v1/booking", BookingRoutes);
+app.use("/api/v1/payment", PaymentRoutes);
 
 app.get("/test", async (req: Request, res: Response, next: NextFunction) => {
   try {

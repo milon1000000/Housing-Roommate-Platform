@@ -22,7 +22,6 @@ model Property {
 
   rooms        Room[]
   bookings     Booking[]
-  utilityBills UtilityBill[]
 
   @@index([city], name: "idx_property_city")
   @@map("properties")

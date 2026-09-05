@@ -56,7 +56,7 @@ const updateRoom = catchAsync(async (req: Request, res: Response) => {
 const deleteRoom = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const user = req.user!;
-  const result = await RoomServices.deleteRoomFromDB(id, user);
+   await RoomServices.deleteRoomFromDB(id, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
