@@ -16,10 +16,10 @@ router.get(
   AdminControllers.getAllLandloard,
 );
 
-router.delete(
-  "/landlords/:id",
+router.patch(
+  "/delete-user/:id",
   auth(Role.ADMIN),
-  AdminControllers.deleteLandlord,
+  AdminControllers.deleteUser,
 );
 
 router.patch(

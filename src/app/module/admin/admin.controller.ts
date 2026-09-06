@@ -28,14 +28,14 @@ const getAllLandloard = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const deleteLandlord = catchAsync(async (req: Request, res: Response) => {
+const deleteUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
-  const result = await AdminServices.deleteLandlord(id);
+  const result = await AdminServices.deleteUser(id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Landlord deleted successfully",
+    message: "User deleted successfully",
     data: result,
   });
 });
@@ -55,6 +55,6 @@ const blockUnblock = catchAsync(async (req: Request, res: Response) => {
 export const AdminControllers = {
   getAllUsers,
   getAllLandloard,
-  deleteLandlord,
+  deleteUser,
   blockUnblock,
 };

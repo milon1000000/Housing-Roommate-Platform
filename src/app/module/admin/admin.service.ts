@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/AppError";
 import {
+  BookingStatus,
   LandlordVerificationStatus,
   Role,
   UserStatus,
@@ -15,8 +16,7 @@ const getAllUsers = async (query: IQuery) => {
   const page = query.page ? Number(query.page) : 1;
   const skip = (page - 1) * limit;
   const sortBy = query.sortBy ? query.sortBy : "createdAt";
-   const sortOrder = query.SortOrder ? query.SortOrder : "desc";
-
+  const sortOrder = query.SortOrder ? query.SortOrder : "desc";
 
   const andConditions: Prisma.UserWhereInput[] = [];
 
@@ -209,54 +209,98 @@ const getAllLandloard = async (query: IQuery) => {
   };
 };
 
-const deleteLandlord = async (id: string) => {
-  const landlord = await prisma.landlord.findFirst({
-    where: {
-      OR: [{ id: id }, { userId: id }],
+const deleteUser = async (id: string) => {
+  let user = await prisma.user.findUnique({
+    where: { id },
+    include: {
+      landlord: true,
+      tenant: true,
     },
   });
 
-  if (!landlord || landlord.isDeleted) {
-    throw new AppError(httpStatus.NOT_FOUND, "Landlord not found");
-  }
-
-  // Soft delete landlord, corresponding user, and properties
-  const result = await prisma.$transaction(async (tx) => {
-    // 1. Soft delete properties
-    await tx.property.updateMany({
-      where: { landlordId: landlord.id },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date(),
-        isAvailable: false,
+  if (!user) {
+    user = await prisma.user.findFirst({
+      where: {
+        OR: [{ landlord: { id } }, { tenant: { id } }],
+      },
+      include: {
+        landlord: true,
+        tenant: true,
       },
     });
+  }
 
-    // 2. Soft delete user
-    await tx.user.update({
-      where: { id: landlord.userId },
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  if (user.role === Role.ADMIN) {
+    throw new AppError(httpStatus.FORBIDDEN, "Admin account cannot be deleted");
+  }
+
+  if (user.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User is already deleted");
+  }
+
+  const result = await prisma.$transaction(async (tx) => {
+    const deletedUser = await tx.user.update({
+      where: { id: user.id },
       data: {
         isDeleted: true,
         deletedAt: new Date(),
         status: UserStatus.DELETED,
       },
-    });
-
-    // 3. Soft delete landlord
-    const deleted = await tx.landlord.update({
-      where: { id: landlord.id },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date(),
+      omit: {
+        password: true,
       },
       include: {
-        user: {
-          omit: { password: true },
-        },
+        landlord: true,
+        tenant: true,
       },
     });
 
-    return deleted;
+    if (user.landlord) {
+      await tx.landlord.update({
+        where: { id: user.landlord.id },
+        data: {
+          isDeleted: true,
+          deletedAt: new Date(),
+        },
+      });
+
+      await tx.property.updateMany({
+        where: { landlordId: user.landlord.id },
+        data: {
+          isDeleted: true,
+          deletedAt: new Date(),
+          isAvailable: false,
+        },
+      });
+    }
+
+    // C. Jodi user-er tenant profile thake
+    if (user.tenant) {
+      await tx.tenant.update({
+        where: { id: user.tenant.id },
+        data: {
+          isDeleted: true,
+          deletedAt: new Date(),
+        },
+      });
+
+      // Tenant-er pending bookings cancel kora
+      await tx.booking.updateMany({
+        where: {
+          tenantId: user.tenant.id,
+          status: BookingStatus.PENDING,
+        },
+        data: {
+          status: BookingStatus.CANCELLED,
+        },
+      });
+    }
+
+    return deletedUser;
   });
 
   return result;
@@ -271,7 +315,6 @@ const blockUnblock = async (id: string, payload?: IBlockUnblockPayload) => {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  // If status is provided in payload, use it; otherwise toggle ACTIVE <-> BLOCKED
   let newStatus: UserStatus;
   if (payload?.status) {
     newStatus = payload.status;
@@ -302,6 +345,6 @@ const blockUnblock = async (id: string, payload?: IBlockUnblockPayload) => {
 export const AdminServices = {
   getAllUsers,
   getAllLandloard,
-  deleteLandlord,
+  deleteUser,
   blockUnblock,
 };
