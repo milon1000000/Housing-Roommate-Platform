@@ -19,7 +19,6 @@ model User {
   // 1-to-1 Relations
   tenant             Tenant?
   landlord           Landlord?
-  roommatePreference RoommatePreference?
 
   @@index([email], name: "idx_user_email")
   @@map("users")
