@@ -15,7 +15,6 @@ router.post(
 );
 
 router.get("/all-rooms", RoomControllers.getAllRooms);
-router.get("/", RoomControllers.getAllRooms);
 router.get("/property/:propertyId", RoomControllers.getRoomsByProperty);
 
 router.get("/:id", RoomControllers.getSingleRoom);
