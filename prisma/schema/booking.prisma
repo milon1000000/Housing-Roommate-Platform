@@ -3,6 +3,7 @@ model Booking {
     status      BookingStatus @default(PENDING) // PENDING, APPROVED, REJECTED, CANCELLED
     startDate   DateTime
     totalAmount Float
+    seatCount   Int           @default(1)
 
     tenantId String
     tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)

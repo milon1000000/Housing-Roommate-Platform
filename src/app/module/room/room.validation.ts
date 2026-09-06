@@ -5,6 +5,12 @@ const createRoomValidationSchema = z.object({
   rentAmount: z.coerce
     .number({ message: "Rent amount is required" })
     .positive("Rent amount must be a positive number"),
+  capacity: z.coerce
+    .number()
+    .int("Capacity must be an integer")
+    .positive("Capacity must be at least 1")
+    .optional()
+    .default(1),
   propertyId: z.string({ message: "Property ID is required" }),
   status: z.enum(["AVAILABLE", "BOOKED", "MAINTENANCE"]).optional(),
 });
@@ -14,6 +20,11 @@ const updateRoomValidationSchema = z.object({
   rentAmount: z.coerce
     .number()
     .positive("Rent amount must be a positive number")
+    .optional(),
+  capacity: z.coerce
+    .number()
+    .int("Capacity must be an integer")
+    .positive("Capacity must be at least 1")
     .optional(),
   status: z.enum(["AVAILABLE", "BOOKED", "MAINTENANCE"]).optional(),
 });

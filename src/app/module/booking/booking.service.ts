@@ -53,6 +53,8 @@ const bookProperty = async (
     }
 
     let totalAmount = property.rentPrice;
+    const seatCount =
+      payload.seatCount && payload.seatCount > 0 ? payload.seatCount : 1;
 
     if (payload.roomId) {
       const room = await tx.room.findUnique({
@@ -61,13 +63,19 @@ const bookProperty = async (
       if (!room || room.propertyId !== property.id) {
         throw new AppError(httpStatus.NOT_FOUND, "Room Not Found");
       }
-      if (room.status !== RoomStatus.AVAILABLE) {
+      if (room.status !== RoomStatus.AVAILABLE || room.availableSeats <= 0) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
-          "This Room Is Already Booked",
+          "This Room Has No Available Seats",
         );
       }
-      totalAmount = room.rentAmount;
+      if (seatCount > room.availableSeats) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          `Only ${room.availableSeats} seat(s) available in this room`,
+        );
+      }
+      totalAmount = room.rentAmount * seatCount;
     }
 
     const existingBooking = await tx.booking.findFirst({
@@ -91,6 +99,7 @@ const bookProperty = async (
         status: BookingStatus.PENDING,
         startDate: new Date(payload.startDate),
         totalAmount,
+        seatCount,
         tenantId: tenant.id,
         propertyId: property.id,
         roomId: payload.roomId || null,
@@ -295,10 +304,25 @@ const bookPaymentCallback = async (query: Record<string, any>) => {
       });
 
       if (booking.roomId) {
-        await tx.room.update({
-          where: { id: booking.roomId },
-          data: { status: RoomStatus.BOOKED },
-        });
+        const currentRoom =
+          booking.room ||
+          (await tx.room.findUnique({ where: { id: booking.roomId } }));
+        if (currentRoom) {
+          const newAvailableSeats = Math.max(
+            0,
+            currentRoom.availableSeats - booking.seatCount,
+          );
+          await tx.room.update({
+            where: { id: booking.roomId },
+            data: {
+              availableSeats: newAvailableSeats,
+              status:
+                newAvailableSeats === 0
+                  ? RoomStatus.BOOKED
+                  : RoomStatus.AVAILABLE,
+            },
+          });
+        }
       } else {
         await tx.property.update({
           where: { id: booking.propertyId },
@@ -366,10 +390,37 @@ const cancelBooking = async (
     });
 
     if (booking.roomId) {
-      await tx.room.update({
-        where: { id: booking.roomId },
-        data: { status: RoomStatus.AVAILABLE },
-      });
+      if (
+        booking.status === BookingStatus.APPROVED ||
+        booking.payment?.status === PaymentStatus.PAID
+      ) {
+        const currentRoom =
+          booking.room ||
+          (await tx.room.findUnique({ where: { id: booking.roomId } }));
+        if (currentRoom) {
+          const restoredSeats = Math.min(
+            currentRoom.capacity,
+            currentRoom.availableSeats + booking.seatCount,
+          );
+          await tx.room.update({
+            where: { id: booking.roomId },
+            data: {
+              availableSeats: restoredSeats,
+              status: RoomStatus.AVAILABLE,
+            },
+          });
+        }
+      }
+    } else {
+      if (
+        booking.status === BookingStatus.APPROVED ||
+        booking.payment?.status === PaymentStatus.PAID
+      ) {
+        await tx.property.update({
+          where: { id: booking.propertyId },
+          data: { isAvailable: true },
+        });
+      }
     }
 
     if (booking.payment && booking.payment.status === PaymentStatus.PAID) {

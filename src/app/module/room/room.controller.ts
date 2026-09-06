@@ -18,13 +18,17 @@ const createRoom = catchAsync(async (req: Request, res: Response) => {
 
 const getRoomsByProperty = catchAsync(async (req: Request, res: Response) => {
   const propertyId = req.params.propertyId as string;
-  const result = await RoomServices.getRoomsByPropertyFromDB(propertyId);
+  const result = await RoomServices.getRoomsByPropertyFromDB(
+    propertyId,
+    req.query,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Rooms retrieved successfully",
-    data: result,
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -56,7 +60,7 @@ const updateRoom = catchAsync(async (req: Request, res: Response) => {
 const deleteRoom = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id as string;
   const user = req.user!;
-   await RoomServices.deleteRoomFromDB(id, user);
+  await RoomServices.deleteRoomFromDB(id, user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -66,10 +70,23 @@ const deleteRoom = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllRooms = catchAsync(async (req: Request, res: Response) => {
+  const result = await RoomServices.getAllRoomsFromDB(req.query);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All rooms retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
+});
+
 export const RoomControllers = {
   createRoom,
   getRoomsByProperty,
   getSingleRoom,
+  getAllRooms,
   updateRoom,
   deleteRoom,
 };

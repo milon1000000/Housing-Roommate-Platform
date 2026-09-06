@@ -4,6 +4,7 @@ export interface IBookPropertyPayload {
   propertyId: string;
   roomId?: string;
   startDate: string | Date;
+  seatCount?: number;
 }
 
 export interface ICancelBookingPayload {

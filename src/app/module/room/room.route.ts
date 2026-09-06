@@ -11,9 +11,11 @@ router.post(
   "/create-room",
   auth(Role.LANDLORD),
   validateRequest(RoomValidations.createRoomValidationSchema),
-  RoomControllers.createRoom
+  RoomControllers.createRoom,
 );
 
+router.get("/all-rooms", RoomControllers.getAllRooms);
+router.get("/", RoomControllers.getAllRooms);
 router.get("/property/:propertyId", RoomControllers.getRoomsByProperty);
 
 router.get("/:id", RoomControllers.getSingleRoom);
@@ -22,13 +24,9 @@ router.patch(
   "/:id",
   auth(Role.LANDLORD),
   validateRequest(RoomValidations.updateRoomValidationSchema),
-  RoomControllers.updateRoom
+  RoomControllers.updateRoom,
 );
 
-router.delete(
-  "/:id",
-  auth(Role.LANDLORD),
-  RoomControllers.deleteRoom
-);
+router.delete("/:id", auth(Role.LANDLORD), RoomControllers.deleteRoom);
 
 export const RoomRoutes = router;
