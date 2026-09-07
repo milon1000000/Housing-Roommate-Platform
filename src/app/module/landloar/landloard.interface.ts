@@ -23,3 +23,7 @@ export interface IApproveLandlordPayload {
 	verificationStatus: LandlordVerificationStatus;
 	rejectionReason?: string;
 }
+
+export interface IReleaseRoomPayload {
+	bookingId: string;
+}

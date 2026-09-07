@@ -41,3 +41,7 @@ export const UpdateLandlordProfileZodSchema = z.object({
 	bio: z.string().optional(),
 	contactNumber: z.string().optional(),
 });
+
+export const ReleaseRoomZodSchema = z.object({
+	bookingId: z.string().optional(),
+});

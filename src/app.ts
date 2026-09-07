@@ -23,6 +23,8 @@ import { PropertyRoutes } from "./app/module/poperty/poperty.route";
 import { RoomRoutes } from "./app/module/room/room.route";
 import { BookingRoutes } from "./app/module/booking/booking.route";
 import { PaymentRoutes } from "./app/module/payment/payment.route";
+import { AdminRoutes } from "./app/module/admin/admin.route";
+import { AnalyticsRoutes } from "./app/module/analytics/analytics.route";
 
 const app: Application = express();
 
@@ -55,6 +57,8 @@ app.use("/api/v1/room", RoomRoutes);
 app.use("/api/v1/booking", BookingRoutes);
 
 app.use("/api/v1/payment", PaymentRoutes);
+app.use("/api/v1/admin", AdminRoutes);
+app.use("/api/v1/analytics", AnalyticsRoutes);
 
 
 app.get(

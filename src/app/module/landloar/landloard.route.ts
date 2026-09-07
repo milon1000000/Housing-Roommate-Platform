@@ -3,6 +3,7 @@ import { validateRequest } from "../../middleware/validateRequest";
 import {
 	ApplyAsLandlordZodSchema,
 	ApproveLandlordZodSchema,
+	ReleaseRoomZodSchema,
 	VerifyLandlordEmailZodSchema,
 } from "./landloard.validation";
 import { LandlordController } from "./landloard.controller";
@@ -33,5 +34,15 @@ router.patch(
 	validateRequest(ApproveLandlordZodSchema),
 	LandlordController.approveLandlord,
 );
+
+router.patch(
+	"/release-room/:bookingId",
+	auth(Role.LANDLORD),
+	validateRequest(ReleaseRoomZodSchema),
+	LandlordController.releaseRoom,
+);
+
+
+
 
 export const LandlordRoutes = router;

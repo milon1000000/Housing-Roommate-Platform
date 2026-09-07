@@ -71,10 +71,27 @@ const getSingleLandlordProfile = catchAsync(
 	},
 );
 
+const releaseRoom = catchAsync(
+	async (req: Request, res: Response) => {
+		const user = req.user as RequestUser;
+		const bookingId = (req.params.bookingId || req.params.id || req.body.bookingId) as string;
+
+		const result = await LandlordServices.releaseRoom(bookingId, user);
+
+		sendResponse(res, {
+			statusCode: httpStatus.OK,
+			success: true,
+			message: result.message || "Room released successfully",
+			data: result,
+		});
+	},
+);
+
 export const LandlordController = {
 	applyAsLandlord,
 	verifyLandlordEmail,
 	approveLandlord,
 	getAllLandlords,
 	getSingleLandlordProfile,
+	releaseRoom,
 };
