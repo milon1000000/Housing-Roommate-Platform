@@ -37,65 +37,58 @@ passport.use(
           return done(null, false, { message: "No name found from google" });
         }
 
+        let isNewUser = false;
+
+        // Check if a user already exists with this email (any role)
         let user = await prisma.user.findFirst({
-          where: {
-            email,
-            role: Role.TENANT,
-            googleId,
-          },
+          where: { email },
           include: { tenant: true },
         });
 
-        let isNewUser = false;
+        if (user) {
+          // If already registered as LANDLORD or ADMIN, reject Google Login
+          if (user.role !== Role.TENANT) {
+            return done(null, false, {
+              message: `You are registered as ${user.role.toLowerCase()}. Google sign-in is only available for Tenants. Please log in with your email and password.`,
+            });
+          }
 
-        if (!user) {
-          const existingCredentialUser = await prisma.user.findFirst({
-            where: {
+          if (user.status === UserStatus.BLOCKED) {
+            return done(null, false, { message: "User is blocked" });
+          }
+          if (user.isDeleted || user.status === UserStatus.DELETED) {
+            return done(null, false, { message: "User is deleted" });
+          }
+
+          // Link Google ID if registered via credentials
+          if (!user.googleId) {
+            user = await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                googleId,
+                authProvider: AuthProvider.GOOGLE,
+                emailVerified: true,
+              },
+              include: { tenant: true },
+            });
+          }
+        } else {
+          // Brand new user -> create Tenant
+          user = await prisma.user.create({
+            data: {
+              name,
               email,
               role: Role.TENANT,
-              authProvider: AuthProvider.CREDENTIAL,
+              googleId,
+              authProvider: AuthProvider.GOOGLE,
+              emailVerified: true,
+              tenant: {
+                create: { name, email },
+              },
             },
             include: { tenant: true },
           });
-
-          if (existingCredentialUser) {
-            if (existingCredentialUser.status === UserStatus.BLOCKED) {
-              return done(null, false, { message: "User is blocked" });
-            }
-            if (
-              existingCredentialUser.isDeleted ||
-              existingCredentialUser.status === UserStatus.DELETED
-            ) {
-              return done(null, false, { message: "User is deleted" });
-            }
-
-            user = await prisma.user.update({
-              where: { id: existingCredentialUser.id },
-              data: {
-                googleId,
-                authProvider: AuthProvider.GOOGLE,
-                emailVerified: true,
-              },
-              include: { tenant: true },
-            });
-            isNewUser = true;
-          } else {
-            user = await prisma.user.create({
-              data: {
-                name,
-                email,
-                role: Role.TENANT,
-                googleId,
-                authProvider: AuthProvider.GOOGLE,
-                emailVerified: true,
-                tenant: {
-                  create: { name, email },
-                },
-              },
-              include: { tenant: true },
-            });
-            isNewUser = true;
-          }
+          isNewUser = true;
         }
 
         if (user.status === UserStatus.BLOCKED) {

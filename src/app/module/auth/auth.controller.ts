@@ -128,7 +128,11 @@ const googleCallback = catchAsync(
 			async (err: any, user: any, info: any) => {
 				try {
 					if (err) {
-						return next(err);
+						return res.redirect(
+							`${config.frontend_url}/login?error=${encodeURIComponent(
+								err?.message || "Google authentication failed. Please try again.",
+							)}`,
+						);
 					}
 					if (!user) {
 						return res.redirect(
@@ -155,9 +159,13 @@ const googleCallback = catchAsync(
 						maxAge: 1000 * 60 * 60 * 24 * 7,
 					});
 
-					return res.redirect(`${config.frontend_url}/auth/success`);
-				} catch (error) {
-					next(error);
+					return res.redirect(`${config.frontend_url}/auth/success?accessToken=${encodeURIComponent(accessToken)}`);
+				} catch (error: any) {
+					return res.redirect(
+						`${config.frontend_url}/login?error=${encodeURIComponent(
+							error?.message || "Google authentication failed. Please try again.",
+						)}`,
+					);
 				}
 			},
 		)(req, res, next);
