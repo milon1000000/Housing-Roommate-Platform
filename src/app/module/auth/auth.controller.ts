@@ -141,16 +141,17 @@ const googleCallback = catchAsync(
 					const result = await AuthService.googleCallback(user);
 					const { accessToken, refreshToken } = result;
 
+					const isProd = config.node_env === "production";
 					res.cookie("accessToken", accessToken, {
 						httpOnly: true,
-						secure: false,
-						sameSite: "none",
+						secure: isProd,
+						sameSite: isProd ? "none" : "lax",
 						maxAge: 1000 * 60 * 60 * 24,
 					});
 					res.cookie("refreshToken", refreshToken, {
 						httpOnly: true,
-						secure: false,
-						sameSite: "none",
+						secure: isProd,
+						sameSite: isProd ? "none" : "lax",
 						maxAge: 1000 * 60 * 60 * 24 * 7,
 					});
 
