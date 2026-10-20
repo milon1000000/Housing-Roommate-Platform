@@ -256,7 +256,6 @@ const getSinglePropertyFromDB = async (id: string) => {
         },
       },
       rooms: true,
-      utilityBills: true,
     },
   });
 

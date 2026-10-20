@@ -19,6 +19,35 @@ import { AppError } from "../../utils/AppError";
 import { IQuery } from "../../interfaces";
 import { IApplyAsLandlordPayload } from "./landloard.interface";
 
+const generateTemporaryPassword = (length = 12): string => {
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
+  const specialChars = "@#$!%*?&";
+  const allChars = lowercase + uppercase + numbers + specialChars;
+
+  // Ensure at least 1 character of each required type
+  const passwordChars = [
+    lowercase[crypto.randomInt(0, lowercase.length)],
+    uppercase[crypto.randomInt(0, uppercase.length)],
+    numbers[crypto.randomInt(0, numbers.length)],
+    specialChars[crypto.randomInt(0, specialChars.length)],
+  ];
+
+  // Fill remaining characters
+  for (let i = passwordChars.length; i < length; i++) {
+    passwordChars.push(allChars[crypto.randomInt(0, allChars.length)]);
+  }
+
+  // Shuffle using Fisher-Yates algorithm
+  for (let i = passwordChars.length - 1; i > 0; i--) {
+    const j = crypto.randomInt(0, i + 1);
+    [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
+  }
+
+  return passwordChars.join("");
+};
+
 const applyAsLandlord = async (payload: IApplyAsLandlordPayload) => {
   const isUserExists = await prisma.user.findUnique({
     where: {
@@ -38,7 +67,7 @@ const applyAsLandlord = async (payload: IApplyAsLandlordPayload) => {
   const dataKey = `landlord-application-data:${payload.user.email}`;
   const otpValue = crypto.randomInt(100000, 900000).toString();
 
-  const randomPassword = Math.random().toString(36).slice(-8);
+  const randomPassword = generateTemporaryPassword();
   const hashedPassword = await bcrypt.hash(
     randomPassword,
     Number(config.bcrypt_salt_rounds),
@@ -206,7 +235,7 @@ const approveLandlord = async (
   let randomPassword: string | undefined;
 
   if (verificationStatus === LandlordVerificationStatus.APPROVED) {
-    randomPassword = Math.random().toString(36).slice(-8);
+    randomPassword = generateTemporaryPassword();
     const hashedPassword = await bcrypt.hash(
       randomPassword,
       Number(config.bcrypt_salt_rounds),

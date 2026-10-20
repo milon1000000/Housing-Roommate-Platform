@@ -27,16 +27,18 @@ const verifyTenantEmail = catchAsync(async (req: Request, res: Response) => {
 
 	const { accessToken, refreshToken, user, tenant } = result;
 
+	const isProd = config.node_env === "production";
+
 	res.cookie("accessToken", accessToken, {
 		httpOnly: true,
-		secure: false,
-		sameSite: "none",
+		secure: isProd,
+		sameSite: isProd ? "none" : "lax",
 		maxAge: 1000 * 60 * 60 * 24, // 24 hour or 1 day
 	});
 	res.cookie("refreshToken", refreshToken, {
 		httpOnly: true,
-		secure: false,
-		sameSite: "none",
+		secure: isProd,
+		sameSite: isProd ? "none" : "lax",
 		maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 	});
 
@@ -59,16 +61,18 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 	const result = await AuthService.loginUser(payload);
 	const { accessToken, refreshToken } = result;
 
+	const isProd = config.node_env === "production";
+
 	res.cookie("accessToken", accessToken, {
 		httpOnly: true,
-		secure: false,
-		sameSite: "none",
+		secure: isProd,
+		sameSite: isProd ? "none" : "lax",
 		maxAge: 1000 * 60 * 60 * 24,
 	});
 	res.cookie("refreshToken", refreshToken, {
 		httpOnly: true,
-		secure: false,
-		sameSite: "none",
+		secure: isProd,
+		sameSite: isProd ? "none" : "lax",
 		maxAge: 1000 * 60 * 60 * 24 * 7,
 	});
 
@@ -90,16 +94,18 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
 	const result = await AuthService.refreshToken(req.cookies.refreshToken);
 	const { accessToken, refreshToken: newRefreshToken } = result;
 
+	const isProd = config.node_env === "production";
+
 	res.cookie("accessToken", accessToken, {
 		httpOnly: true,
-		secure: false,
-		sameSite: "none",
+		secure: isProd,
+		sameSite: isProd ? "none" : "lax",
 		maxAge: 1000 * 60 * 60 * 24,
 	});
 	res.cookie("refreshToken", newRefreshToken, {
 		httpOnly: true,
-		secure: false,
-		sameSite: "none",
+		secure: isProd,
+		sameSite: isProd ? "none" : "lax",
 		maxAge: 1000 * 60 * 60 * 24 * 7,
 	});
 
@@ -179,6 +185,23 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const logout = catchAsync(async (req: Request, res: Response) => {
+  const isProd = config.node_env === "production";
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? ("none" as const) : ("lax" as const),
+  };
+  res.clearCookie("accessToken", cookieOptions);
+  res.clearCookie("refreshToken", cookieOptions);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User Logged Out Successfully",
+    data: null,
+  });
+});
+
 export const AuthController = {
 	registerTenant,
 	verifyTenantEmail,
@@ -187,4 +210,5 @@ export const AuthController = {
 	googleCallback,
 	forgotPassword,
 	resetPassword,
+	logout
 };

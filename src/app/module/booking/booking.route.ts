@@ -37,7 +37,7 @@ router.get("/my-bookings", auth(Role.TENANT), BookingControllers.getMyBookings);
 
 router.get(
   "/all-bookings",
-  auth(Role.ADMIN, Role.LANDLORD),
+  auth(Role.ADMIN),
   BookingControllers.getAllBookings,
 );
 
