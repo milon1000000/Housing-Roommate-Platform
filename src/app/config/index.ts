@@ -16,7 +16,10 @@ export default {
 	jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN!,
 	google_client_id: process.env.GOOGLE_CLIENT_ID!,
 	google_client_secret: process.env.GOOGLE_CLIENT_SECRET!,
-	google_client_callback: process.env.GOOGLE_CLIENT_CALLBACK_URL!,
+	google_client_callback:
+		(process.env.VERCEL && process.env.GOOGLE_CLIENT_CALLBACK_URL?.includes("localhost"))
+			? "https://housing-backend-theta.vercel.app/api/v1/auth/google/callback"
+			: process.env.GOOGLE_CLIENT_CALLBACK_URL!,
 	tester_admin_name: process.env.TESTER_ADMIN_NAME!,
 	tester_admin_email: process.env.TESTER_ADMIN_EMAIL!,
 	tester_admin_password: process.env.TESTER_ADMIN_PASSWORD!,
