@@ -49,7 +49,7 @@ passport.use(
           // If already registered as LANDLORD or ADMIN, reject Google Login
           if (user.role !== Role.TENANT) {
             return done(null, false, {
-              message: `You are registered as ${user.role.toLowerCase()}. Google sign-in is only available for Tenants. Please log in with your email and password.`,
+              message: `Google sign-in is only available for Tenants. Please log in with your email and password.`,
             });
           }
 
