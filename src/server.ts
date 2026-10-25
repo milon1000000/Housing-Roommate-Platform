@@ -1,38 +1,21 @@
 import app from "./app";
 import config from "./app/config";
-// import { deleteUnverifiedDoctors } from "./app/lib/cron";
 import { transporter } from "./app/lib/nodemailer";
-import { prisma } from "./app/lib/prisma";
-import { redisClient } from "./app/lib/redis";
-import { seedTesterAdmin, seedTesterLandlord } from "./app/utils/seed";
 
-const PORT = config.port;
+const PORT = config.port || 5000;
 
-const main = async () => {
-  try {
-    await prisma.$connect();
-    console.log("Connected to the database successfully.");
-    if (!redisClient.isOpen) {
-      await redisClient.connect();
+if (!process.env.VERCEL) {
+  transporter.verify((error) => {
+    if (error) {
+      console.warn("Nodemailer verification notice:", error.message);
+    } else {
+      console.log("Nodemailer Connected Successfully.");
     }
-    console.log("Redis Connected Successfully");
+  });
 
-    await seedTesterAdmin();
-    await seedTesterLandlord();
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
-    // await deleteUnverifiedDoctors();
-
-    await transporter.verify();
-    console.log("Nodemailer Connected Successfully.");
-
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Error starting the server:", error);
-    await prisma.$disconnect();
-    process.exit(1);
-  }
-};
-
-main();
+export default app;

@@ -1,20 +1,17 @@
-import { upload } from "./../../lib/multer";
 import { Router } from "express";
-import { Role } from "../../../generated/prisma/enums";
-import { auth } from "../../middleware/checkAuth";
+import { validateRequest } from "../../middleware/validateRequest";
 import { UserController } from "./user.controller";
+import { UserValidation } from "./user.validation";
 
 const router = Router();
-router.get(
-	"/me",
-	auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
-	UserController.getMe,
-);
-router.patch(
-	"/update-profile",
-	auth(Role.ADMIN, Role.LANDLORD, Role.TENANT),
-	upload.single("profileImage"),
-	UserController.updateProfile,
+
+// Primary endpoint
+router.post(
+	"/send-email",
+	validateRequest(UserValidation.sendEmailZodSchema),
+	UserController.sendEmail,
 );
 
-export const UserRouters = router;
+
+
+export const UserRoutes = router;

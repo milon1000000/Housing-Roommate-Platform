@@ -1,49 +1,22 @@
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
-import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
-import { RequestUser } from "../../middleware/checkAuth";
-import { IRequestUser } from "./user.interface";
+import { UserService } from "./user.service";
 
-const getMe = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user as RequestUser;
-  const result = await UserServices.getMe(user);
+const sendEmail = catchAsync(async (req: Request, res: Response) => {
+	const payload = req.body;
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "User profile retrieved successfully",
-    data: result,
-  });
-});
+	const result = await UserService.userSendEmail(payload);
 
-const updateProfile = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user as RequestUser;
-  const file = req.file;
-
-  let payload = req.body;
-  if (payload?.data && typeof payload.data === "string") {
-    try {
-      payload = JSON.parse(payload.data);
-    } catch {
-      // ignore
-    }
-  }
-
-  if (file) payload.buffer = file.buffer;
-
-  const result = await UserServices.updateProfile(payload, user.userId);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Profile updated successfully",
-    data: result,
-  });
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: "Message sent successfully!",
+		data: result,
+	});
 });
 
 export const UserController = {
-  getMe,
-  updateProfile,
+	sendEmail,
 };

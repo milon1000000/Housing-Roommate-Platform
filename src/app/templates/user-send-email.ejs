@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Portfolio Message</title>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #0f0f13;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #e2e8f0;
+    "
+  >
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="background-color: #0f0f13; padding: 40px 15px"
+    >
+      <tr>
+        <td align="center">
+          <!-- Main Container -->
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="
+              max-width: 600px;
+              width: 100%;
+              background-color: #18181f;
+              border-radius: 16px;
+              overflow: hidden;
+              border: 1px solid #2d2d39;
+              box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                style="
+                  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+                  padding: 30px;
+                  text-align: center;
+                "
+              >
+                <h1
+                  style="
+                    margin: 0;
+                    color: #ffffff;
+                    font-size: 24px;
+                    font-weight: 700;
+                    letter-spacing: -0.5px;
+                  "
+                >
+                  📬 New Contact Message
+                </h1>
+                <p
+                  style="
+                    margin: 8px 0 0;
+                    color: #e0e7ff;
+                    font-size: 14px;
+                  "
+                >
+                  Someone reached out via your Portfolio Website
+                </p>
+              </td>
+            </tr>
+
+            <!-- Content Area -->
+            <tr>
+              <td style="padding: 35px 30px">
+                <!-- Sender Info Card -->
+                <table
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="
+                    background-color: #22222d;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 25px;
+                    border: 1px solid #2d2d3a;
+                  "
+                >
+                  <tr>
+                    <td style="padding-bottom: 10px">
+                      <span style="color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 600">Sender Name:</span>
+                      <div style="color: #ffffff; font-size: 16px; font-weight: 600; margin-top: 3px">
+                        <%= name %>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-bottom: 10px">
+                      <span style="color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 600">Sender Email:</span>
+                      <div style="margin-top: 3px">
+                        <a
+                          href="mailto:<%= email %>"
+                          style="color: #a78bfa; font-size: 15px; text-decoration: none; font-weight: 500"
+                        >
+                          <%= email %>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <span style="color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 600">Received On:</span>
+                      <div style="color: #cbd5e1; font-size: 14px; margin-top: 3px">
+                        <%= date %>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Message Section -->
+                <div style="margin-bottom: 30px">
+                  <span style="color: #94a3b8; font-size: 13px; text-transform: uppercase; font-weight: 600">Message:</span>
+                  <div
+                    style="
+                      margin-top: 8px;
+                      background-color: #121217;
+                      border-left: 4px solid #8b5cf6;
+                      border-radius: 0 10px 10px 0;
+                      padding: 20px;
+                      color: #f1f5f9;
+                      font-size: 15px;
+                      line-height: 1.7;
+                      white-space: pre-wrap;
+                      word-break: break-word;
+                    "
+                  >
+                    <%= message %>
+                  </div>
+                </div>
+
+                <!-- Reply Action Button -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center">
+                      <a
+                        href="mailto:<%= email %>?subject=Re: Your message to Mahinur Milon"
+                        style="
+                          display: inline-block;
+                          background: linear-gradient(135deg, #7c3aed, #4f46e5);
+                          color: #ffffff;
+                          font-size: 15px;
+                          font-weight: 600;
+                          text-decoration: none;
+                          padding: 12px 30px;
+                          border-radius: 10px;
+                          box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+                        "
+                      >
+                        Reply Directly to <%= name %>
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                style="
+                  background-color: #121217;
+                  padding: 20px;
+                  text-align: center;
+                  border-top: 1px solid #2d2d3a;
+                "
+              >
+                <p style="margin: 0; color: #64748b; font-size: 13px">
+                  This email was automatically dispatched from your Portfolio Contact Form.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
